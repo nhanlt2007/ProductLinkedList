@@ -1,17 +1,15 @@
 #include "shared.h"
 
 // Tạo danh mục gốc, không có cha. Độ phức tạp O(1).
-Category* createRoot(const string& idIn, const string& nameIn) {
-    string id = trim(idIn), name = trim(nameIn);
-    if (!isValidId(id)) {
-        cout << "Loi: ID khong hop le (1-20 ky tu, chi gom chu, so, _ hoac -).\n";
-        return nullptr;
-    }
-    if (!isValidName(name)) {
-        cout << "Loi: Ten danh muc khong duoc rong va toi da 60 ky tu.\n";
-        return nullptr;
-    }
-    return new Category(id, name, nullptr);
+Category* createCategoryNode(string id, string name, Category* parent) {
+    Category* node = new Category;
+    node->id = id;
+    node->name = name;
+    node->parent = parent;
+    node->childHead = nullptr;
+    node->nextSibling = nullptr;
+    node->productHead = nullptr;
+    return node;
 }
 
 // Thêm danh mục con vào cuối danh sách con của parent.
