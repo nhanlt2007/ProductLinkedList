@@ -1,16 +1,20 @@
 #include "shared.h"
 // 1. Tim danh muc theo ID
 Category* findCategoryById(Category* root, const string& id) {
+
     // Neu cay rong thi khong tim thay
     if (root == nullptr) {
         return nullptr;
     }
+
     // Kiem tra ID cua danh muc hien tai
     if (root->id == id) {
         return root;
     }
+
     // Bat dau tu danh muc con dau tien
     Category* child = root->childHead;
+
     // Duyet tat ca danh muc con
     while (child != nullptr) {
         Category* result = findCategoryById(child, id);
@@ -19,18 +23,22 @@ Category* findCategoryById(Category* root, const string& id) {
         if (result != nullptr) {
             return result;
         }
+
         // Chuyen sang danh muc anh/em tiep theo
         child = child->nextSibling;
     }
+
     // Khong tim thay ID
     return nullptr;
 }
 // 2. Tim danh muc goc
 Category* findRoot(Category* cat) {
+
     // Kiem tra danh muc co ton tai khong
     if (cat == nullptr) {
         return nullptr;
     }
+
     // Di nguoc len danh muc cha cho den khi gap goc
     while (cat->parent != nullptr) {
         cat = cat->parent;
@@ -39,38 +47,42 @@ Category* findRoot(Category* cat) {
     // Tra ve danh muc goc
     return cat;
 }
-// 3. In duong dan tu danh muc goc den danh muc hien tai
+
+
+// 3. Ham phu de quy in duong dan danh muc
+static void printPathRec(Category* cat) {
+
+    // Neu danh muc khong ton tai thi dung
+    if (cat == nullptr) {
+        return;
+    }
+
+    // Goi de quy de in danh muc cha truoc
+    printPathRec(cat->parent);
+
+    // Neu danh muc hien tai co cha thi in dau mui ten
+    if (cat->parent != nullptr) {
+        cout << " -> ";
+    }
+
+    // In ten danh muc hien tai
+    cout << cat->name;
+}
+
+
+// Ham in duong dan tu danh muc goc den danh muc hien tai
 void printPath(Category* cat) {
+
     // Kiem tra danh muc co ton tai khong
     if (cat == nullptr) {
         cout << "Khong tim thay danh muc!\n";
         return;
     }
-    // Mang luu duong dan danh muc
-    Category* path[100];
-    int count = 0;
 
-    // Bat dau tu danh muc hien tai
-    Category* current = cat;
-
-    // Luu danh muc hien tai va di nguoc len cha
-    while (current != nullptr && count < 100) {
-        path[count] = current;
-        count++;
-
-        current = current->parent;
-    }
-
-    // In duong dan theo thu tu tu goc xuong
     cout << "Duong dan danh muc: ";
 
-    for (int i = count - 1; i >= 0; i--) {
-        cout << path[i]->name;
-
-        if (i > 0) {
-            cout << " -> ";
-        }
-    }
+    // Goi ham phu de quy
+    printPathRec(cat);
 
     cout << "\n";
 }
@@ -78,6 +90,7 @@ void printPath(Category* cat) {
 
 // 4. In danh sach danh muc con truc tiep
 void printSubCategories(Category* cat) {
+
     // Kiem tra danh muc co ton tai khong
     if (cat == nullptr) {
         cout << "Danh muc khong ton tai!\n";
@@ -108,8 +121,15 @@ void printSubCategories(Category* cat) {
 
 // 5. In toan bo cay danh muc
 void printTree(Category* root, int depth) {
+
     // Neu danh muc rong thi dung
     if (root == nullptr) {
+
+        // Chi in thong bao khi goi tu goc
+        if (depth == 0) {
+            cout << "Cay danh muc dang rong.\n";
+        }
+
         return;
     }
 
@@ -127,6 +147,7 @@ void printTree(Category* root, int depth) {
 
     // Duyet tat ca danh muc con
     while (child != nullptr) {
+
         // Goi de quy de in danh muc con
         printTree(child, depth + 1);
 
@@ -138,6 +159,7 @@ void printTree(Category* root, int depth) {
 
 // 6. In thong tin chi tiet danh muc
 void printCategoryInfo(Category* cat) {
+
     // Kiem tra danh muc co ton tai khong
     if (cat == nullptr) {
         cout << "Khong tim thay danh muc!\n";
@@ -177,7 +199,6 @@ void printCategoryInfo(Category* cat) {
     int productCount = 0;
 
     Product* product = cat->productHead;
-
     while (product != nullptr) {
         productCount++;
         product = product->next;
