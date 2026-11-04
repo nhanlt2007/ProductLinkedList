@@ -1,0 +1,164 @@
+#include "shared.h"
+#include <iostream>
+using namespace std;
+
+// 1. Tìm danh mục theo ID
+Category* findCategoryById(Category* root, const string& id) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    if (root->id == id) {
+        return root;
+    }
+
+    Category* child = root->childHead;
+
+    while (child != nullptr) {
+        Category* result = findCategoryById(child, id);
+
+        if (result != nullptr) {
+            return result;
+        }
+
+        child = child->nextSibling;
+    }
+
+    return nullptr;
+}
+
+// 2. Tìm danh mục gốc
+Category* findRoot(Category* cat) {
+    if (cat == nullptr) {
+        return nullptr;
+    }
+
+    while (cat->parent != nullptr) {
+        cat = cat->parent;
+    }
+
+    return cat;
+}
+
+// 3. In đường dẫn danh mục
+void printPath(Category* cat) {
+    if (cat == nullptr) {
+        cout << "Khong tim thay danh muc!\n";
+        return;
+    }
+
+    Category* path[100];
+    int count = 0;
+
+    Category* current = cat;
+
+    while (current != nullptr && count < 100) {
+        path[count++] = current;
+        current = current->parent;
+    }
+
+    cout << "Duong dan danh muc: ";
+
+    for (int i = count - 1; i >= 0; i--) {
+        cout << path[i]->name;
+
+        if (i > 0) {
+            cout << " -> ";
+        }
+    }
+
+    cout << "\n";
+}
+
+// 4. In danh mục con
+void printSubCategories(Category* cat) {
+    if (cat == nullptr) {
+        cout << "Danh muc khong ton tai!\n";
+        return;
+    }
+
+    if (cat->childHead == nullptr) {
+        cout << "Danh muc nay khong co danh muc con.\n";
+        return;
+    }
+
+    cout << "\nDanh sach danh muc con cua: "
+         << cat->name << "\n";
+
+    Category* child = cat->childHead;
+
+    while (child != nullptr) {
+        cout << "- ID: " << child->id
+             << " | Ten: " << child->name << "\n";
+
+        child = child->nextSibling;
+    }
+}
+
+// 5. In toàn bộ cây danh mục
+void printTree(Category* root, int depth) {
+    if (root == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < depth; i++) {
+        cout << "    ";
+    }
+
+    cout << "|-- " << root->name
+         << " (ID: " << root->id << ")\n";
+
+    Category* child = root->childHead;
+
+    while (child != nullptr) {
+        printTree(child, depth + 1);
+        child = child->nextSibling;
+    }
+}
+
+// 6. In thông tin danh mục
+void printCategoryInfo(Category* cat) {
+    if (cat == nullptr) {
+        cout << "Khong tim thay danh muc!\n";
+        return;
+    }
+
+    cout << "\n========== THONG TIN DANH MUC ==========\n";
+
+    cout << "Ma danh muc: " << cat->id << "\n";
+    cout << "Ten danh muc: " << cat->name << "\n";
+
+    if (cat->parent != nullptr) {
+        cout << "Danh muc cha: "
+             << cat->parent->name
+             << " (ID: " << cat->parent->id << ")\n";
+    } else {
+        cout << "Danh muc cha: Khong co (Danh muc goc)\n";
+    }
+
+    int count = 0;
+
+    Category* child = cat->childHead;
+
+    while (child != nullptr) {
+        count++;
+        child = child->nextSibling;
+    }
+
+    cout << "So danh muc con truc tiep: "
+         << count << "\n";
+
+    int productCount = 0;
+
+    Product* product = cat->productHead;
+
+    while (product != nullptr) {
+        productCount++;
+        product = product->next;
+    }
+
+    cout << "So san pham trong danh muc: "
+         << productCount << "\n";
+
+    cout << "========================================\n";
+}
