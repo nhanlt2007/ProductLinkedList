@@ -1,6 +1,5 @@
 #include "shared.h"
 #include <cstdlib>
-#include <limits>
 
 using namespace std;
 
@@ -27,7 +26,8 @@ static int readInt(const string& prompt) {
     char* endPtr = nullptr;
     long value = strtol(s.c_str(), &endPtr, 10);
 
-    if (*endPtr != '\0')
+    // kiem tra khoang gia tri TRUOC khi ep sang int (tranh so rat lon bi tran ve 0 -> thoat)
+    if (*endPtr != '\0' || value < 0 || value > 1000)
         return -1;
 
     return (int)value;
@@ -96,6 +96,7 @@ void showMenu() {
          << " 8. Xoa san pham\n"
          << " 9. Xem san pham trong danh muc\n"
          << "10. Xem tat ca san pham (gom con chau)\n"
+         << "11. Xem thong tin mot danh muc\n"
          << " 0. Thoat\n";
 }
 
@@ -105,8 +106,7 @@ int main() {
     Category* root = createRoot("ROOT", "Ten cua hang");
 
     loadSampleData(root);
-
-    while (true) {
+while (true) {
         showMenu();
 
         int choice = readInt("\nNhap lua chon: ");
@@ -118,6 +118,22 @@ int main() {
             return 0;
 
         case 1: {
+            // Cay rong (da xoa goc): cho tao lai danh muc goc
+            if (root == nullptr) {
+                cout << "Cay dang rong, tao danh muc goc moi.\n";
+                string rid = readLine("ID danh muc goc: ");
+                string rname = readLine("Ten danh muc goc: ");
+
+                root = createRoot(rid, rname);
+
+                if (root)
+                    cout << "Them thanh cong.\n";
+                else
+                    cout << "Them that bai.\n";
+
+                break;
+            }
+
             string parentId = readLine("ID danh muc cha: ");
 
             Category* parent = findCategoryById(root, parentId);
@@ -209,7 +225,7 @@ int main() {
             if (!readPrice("Gia: ", price)) {
                 cout << "Gia khong hop le.\n";
                 break;
-            }
+}
 
             if (addProduct(cat, pid, pname, price))
                 cout << "Them thanh cong.\n";
@@ -261,6 +277,19 @@ int main() {
                 cout << "Khong tim thay.\n";
             else
                 printAllProducts(cat);
+
+            break;
+        }
+
+        case 11: {
+            string id = readLine("ID danh muc: ");
+
+            Category* cat = findCategoryById(root, id);
+
+            if (!cat)
+                cout << "Khong tim thay.\n";
+            else
+                printCategoryInfo(cat);
 
             break;
         }
