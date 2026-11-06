@@ -1,5 +1,6 @@
 #include "shared.h"
 #include <iomanip>
+#include <cmath>
 
 bool productIdExists(Category* root, const string& id)
 {
@@ -37,19 +38,20 @@ bool addProduct(Category* cat, const string& id, const string& name, double pric
         return false;
     }
 
-    // isfinite loại cả NaN lẫn vô cùng
+    // isfinite loai ca NaN lan vo cung
     if (!isfinite(price) || price < 0)
     {
         cout << "Loi: Gia phai la so khong am.\n";
         return false;
     }
 
-    // Kiểm tra trùng ID trên TOÀN CÂY
+    // Kiem tra trung ID tren TOAN CAY
     if (productIdExists(findRoot(cat), cleanId))
     {
         cout << "Loi: ID san pham '" << cleanId << "' da ton tai.\n";
         return false;
     }
+
     Product* newProduct = new Product(cleanId, cleanName, price);
     if (cat->productHead == nullptr)
     {
@@ -109,7 +111,7 @@ void printProducts(Category* cat)
         cout << "ID : " << p->id << "\n";
         cout << "Ten: " << p->name << "\n";
         cout << "Gia: " << p->price << "\n";
-cout << "-----------------------------\n";
+        cout << "-----------------------------\n";
     }
     cout.flags(oldFlags);
     cout.precision(oldPrecision);
